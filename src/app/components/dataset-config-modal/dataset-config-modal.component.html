@@ -1,0 +1,15 @@
+<div class="overlay">
+  <div class="modal">
+    <h3>Configurar dataset {{ datasetId }} (relatório {{ reportId }})</h3>
+
+    <label>
+      Campo de configuração:
+      <input type="text" [(ngModel)]="configField" />
+    </label>
+
+    <div class="actions">
+      <button (click)="onSave()">Salvar</button>
+      <button (click)="onClose()">Fechar</button>
+    </div>
+  </div>
+</div>

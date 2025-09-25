@@ -1,0 +1,82 @@
+<div class="report-editor">
+
+  <!-- abas ou lista lateral dos relatórios -->
+  <div class="report-list">
+    <ul>
+      <li *ngFor="let rep of reports"
+          [class.active]="rep.id === activeReportId"
+          (click)="setActiveReport(rep.id)">
+        {{ rep.name }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="report-content" *ngIf="activeReportId">
+    <ng-container *ngFor="let rep of reports">
+      <div *ngIf="rep.id === activeReportId">
+        <h2>{{ rep.name }}</h2>
+
+        <!-- seleção do faturamento (dropdown) -->
+        <label>
+          Tipo de faturamento:
+          <select #drop (change)="onBillingSelected(rep.id, drop.value)">
+            <option value="" disabled selected>Escolha</option>
+            <option value="tipo1">Tipo 1</option>
+            <option value="tipo2">Tipo 2</option>
+            <option value="tipo3">Tipo 3</option>
+          </select>
+        </label>
+
+        <!-- input código de transação -->
+        <label>
+          Código de transação:
+          <input #txCode type="text" (input)="onTransactionCodeChanged(rep.id, txCode.value)" />
+        </label>
+
+        <h3>Datasets</h3>
+        <ul class="dataset-list">
+          <li *ngFor="let ds of rep.datasets">
+            <span>{{ ds.name }}</span>
+
+            <!-- indicador visual de status -->
+            <span class="status-badge"
+                  [ngClass]="{
+                    'saved': isDatasetSaved(rep.id, ds.id),
+                    'pending': !isDatasetSaved(rep.id, ds.id)
+                  }">
+              {{ isDatasetSaved(rep.id, ds.id) ? 'SAVED' : 'PENDING' }}
+            </span>
+
+            <button (click)="openDatasetModal(rep.id, ds.id)">
+              Configurar
+            </button>
+          </li>
+        </ul>
+
+        <div class="actions-footer">
+          <button (click)="onAssociate(rep.id)"
+                  [disabled]="!isReportReady(rep.id)">
+            Associar
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+  <div class="footer-global">
+    <button [disabled]="!areAllReportsReady()">
+      Salvar e Avançar
+    </button>
+  </div>
+
+  <!-- componente modal (condicional) -->
+  <app-dataset-config-modal
+    #modal
+    (saved)="onDatasetSaved($event.reportId, $event.datasetId)"
+    *ngIf="modalVisible"
+    [reportId]="modalReportId!"
+    [datasetId]="modalDatasetId!"
+    (close)="modalVisible = false">
+  </app-dataset-config-modal>
+

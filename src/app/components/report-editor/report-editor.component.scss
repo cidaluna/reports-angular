@@ -1,0 +1,153 @@
+:host {
+  display: flex;
+  flex-direction: column;  // empilha verticalmente
+  align-items: center;     // centraliza horizontalmente
+  padding: 2rem;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.report-editor {
+  display: flex;
+  width: 100%;     // para ocupar toda largura do container
+  box-sizing: border-box;
+  gap: 1rem;
+  max-width: 960px;
+  background-color: #dff2ffad;
+  padding: 1rem 2rem;
+
+  .report-list {
+    width: 200px;
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: 8px;
+        cursor: pointer;
+
+        &.active {
+          background-color: #007bff;
+          color: white;
+        }
+
+        &:hover {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+  }
+
+  .report-content {
+    flex: 1;
+    padding: 16px;
+    // Inputs e selects estilizados
+  input[type="text"],
+  select {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline-offset: 2px;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+  }
+
+  // Botões dentro da report-content (Configurar e Associar)
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+    label {
+      display: block;
+      margin: 12px 0;
+    }
+
+    .dataset-list {
+      list-style: none;
+      padding: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .status-badge {
+          margin-left: 8px;
+          padding: 2px 6px;
+          border-radius: 4px;
+
+          &.saved {
+            background-color: #28a745;
+            color: white;
+          }
+
+          &.pending {
+            background-color: #ffc107;
+            color: black;
+          }
+        }
+
+        button {
+          margin-left: auto;
+        }
+      }
+    }
+
+    .actions-footer {
+      margin-top: 24px;
+    }
+  }
+}
+
+.footer-global {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #dff2ffad;
+  padding: 2rem 0;
+  border-top: 1px solid #cccccc;
+
+  button {
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 2rem;
+
+    &:hover:not(:disabled) {
+      background-color: #218838;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
