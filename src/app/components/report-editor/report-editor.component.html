@@ -19,8 +19,9 @@
         <!-- seleção do faturamento (dropdown) -->
         <label>
           Tipo de faturamento:
-          <select #drop (change)="onBillingSelected(rep.id, drop.value)">
-            <option value="" disabled selected>Escolha</option>
+          <select #drop [(ngModel)]="getReportState(rep.id).billingTypeSelected"
+          (change)="onBillingTypeSelected(rep.id, drop.value)">
+            <option value="" disabled>Escolha</option>
             <option value="tipo1">Tipo 1</option>
             <option value="tipo2">Tipo 2</option>
             <option value="tipo3">Tipo 3</option>
@@ -30,7 +31,9 @@
         <!-- input código de transação -->
         <label>
           Código de transação:
-          <input #txCode type="text" (input)="onTransactionCodeChanged(rep.id, txCode.value)" />
+          <input #txCode type="text"
+            [(ngModel)]="getReportState(rep.id).transactionCode"
+            (input)="onTransactionCodeChanged(rep.id, txCode.value)" />
         </label>
 
         <h3>Datasets</h3>
@@ -38,14 +41,6 @@
           <li *ngFor="let ds of rep.datasets">
             <span>{{ ds.name }}</span>
 
-            <!-- indicador visual de status -->
-            <span class="status-badge"
-                  [ngClass]="{
-                    'saved': isDatasetSaved(rep.id, ds.id),
-                    'pending': !isDatasetSaved(rep.id, ds.id)
-                  }">
-              {{ isDatasetSaved(rep.id, ds.id) ? 'SAVED' : 'PENDING' }}
-            </span>
 
             <button (click)="openDatasetModal(rep.id, ds.id)">
               Configurar
@@ -57,6 +52,10 @@
           <button (click)="onAssociate(rep.id)"
                   [disabled]="!isReportReady(rep.id)">
             Associar
+          </button>
+          <button class="cancel-btn"
+                  (click)="onCancel(rep.id)">
+            Cancelar
           </button>
         </div>
       </div>

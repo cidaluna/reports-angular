@@ -116,8 +116,23 @@
       }
     }
 
-    .actions-footer {
-      margin-top: 24px;
+    .actions-footer button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #1976d2;
+      color: #fff;
+      margin-right: 8px;
+      cursor: pointer;
+
+      &:disabled {
+        background-color: #8e8e8e;
+        cursor: not-allowed;
+      }
+    }
+
+    .actions-footer .cancel-btn {
+      background: #e53935; // cor de fundo diferente para cancelar
     }
   }
 }

@@ -1,20 +1,114 @@
 {
   "reports": [
     {
-      "id": "r1",
+      "id": "rA",
       "name": "Relatório A",
       "datasets": [
-        { "id": "d1", "name": "Dataset 1" },
-        { "id": "d2", "name": "Dataset 2" }
+        {
+          "id": "d1",
+          "name": "Dataset score"
+        },
+        {
+          "id": "d2",
+          "name": "Dataset analytics"
+        }
       ]
     },
     {
-      "id": "r2",
+      "id": "rB",
       "name": "Relatório B",
       "datasets": [
-        { "id": "d3", "name": "Dataset 3" }
+        {
+          "id": "d1",
+          "name": "Dataset consultas SPC"
+        }
+      ]
+    },
+    {
+      "id": "rC",
+      "name": "Relatório C",
+      "datasets": [
+        {
+          "id": "d1",
+          "name": "Dataset consultas SPC"
+        },
+        {
+          "id": "d2",
+          "name": "Dataset score"
+        },
+        {
+          "id": "d3",
+          "name": "Dataset scores"
+        }
       ]
     }
   ],
-  "associations": []
+  "associations": [
+    {
+      "reportId": "r1",
+      "billingTypeSelected": true,
+      "transactionCode": "a3a3",
+      "id": 1
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": true,
+      "transactionCode": "kkk",
+      "id": 2
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": true,
+      "transactionCode": "qaqa",
+      "id": 3
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "",
+      "transactionCode": "wewe",
+      "id": 4
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "",
+      "transactionCode": "wwwe",
+      "id": 5
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "",
+      "transactionCode": "drdgdrgd",
+      "id": 6
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "tipo1",
+      "transactionCode": "acscs",
+      "id": 7
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "tipo3",
+      "transactionCode": "zsaxs",
+      "id": 8
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "tipo2",
+      "transactionCode": "2121",
+      "id": 9
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "tipo3",
+      "transactionCode": "151515",
+      "id": 10
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "tipo2",
+      "transactionCode": "wewe",
+      "id": 11
+    }
+  ]
 }

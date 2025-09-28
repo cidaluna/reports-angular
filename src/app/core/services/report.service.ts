@@ -18,7 +18,11 @@ export class ReportService {
 
   // Simula o salvamento das escolhas do usuário para um relatório
   associateReport(reportId: string, payload: any): Observable<any> {
-    // poderia fazer PUT ou POST num endpoint
-    return this.http.post(`${this.baseUrl}/associations/${reportId}`, payload);
+    // poderia fazer PUT é pra algo já existente, ou POST num endpoint
+    //return this.http.post(`${this.baseUrl}/associations/${reportId}`, payload);
+    return this.http.post(`${this.baseUrl}/associations`, {
+    reportId,
+    ...payload
+  });
   }
 }
