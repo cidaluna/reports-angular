@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LocalstorageService } from '../../core/services/localstorage.service';
@@ -10,7 +10,7 @@ import { LocalstorageService } from '../../core/services/localstorage.service';
   templateUrl: './dataset-config-modal.component.html',
   styleUrl: './dataset-config-modal.component.scss',
 })
-export class DatasetConfigModalComponent {
+export class DatasetConfigModalComponent implements OnInit {
   @Input() reportId!: string;
   @Input() datasetId!: string;
   @Output() saved = new EventEmitter<{ reportId: string; datasetId: string }>();
@@ -23,19 +23,6 @@ export class DatasetConfigModalComponent {
   configField: string = '';
 
   constructor(private readonly localstorageService: LocalstorageService) {}
-
-  // ngOnInit() {
-  //   // Supondo que você tenha um método para buscar os dados dos relatórios
-  //   const reports = this.localstorageService.getListArgsEdit();
-  //   const report = reports.find((r) => r.id === this.reportId);
-  //   if (report) {
-  //     this.reportName = report.name;
-  //     const dataset = report.datasets.find((d: any) => d.id === this.datasetId);
-  //     if (dataset) {
-  //       this.datasetName = dataset.name;
-  //     }
-  //   }
-  // }
 
   ngOnInit() {
     // Tenta achar primeiro na lista de editados
@@ -54,75 +41,99 @@ export class DatasetConfigModalComponent {
       if (dataset) {
         this.datasetName = dataset.name;
         if (dataset.config) {
-          this.configField = dataset.config; // se já tiver config, carrega
+          this.configField = dataset.config.field ?? ''; // se já tiver config, carrega
         }
       }
     }
   }
 
-  // onSave() {
-  //   // Busca lista atual
-  //   const reports = this.localstorageService.getListArgsEdit();
-  //   const report = reports.find((r) => r.id === this.reportId);
-
-  //   let reportName = '';
-  //   let datasetName = '';
-
-  //   if (report) {
-  //     reportName = report.name;
-  //     const dataset = report.datasets.find((d: any) => d.id === this.datasetId);
-  //     if (dataset) {
-  //       datasetName = dataset.name;
-  //     }
-  //   }
-
-  //   const updatedReport = {
-  //     id: this.reportId,
-  //     name: reportName,
-  //     datasets: [
-  //       {
-  //         id: this.datasetId,
-  //         name: datasetName,
-  //         config: this.configField,
-  //       },
-  //     ],
-  //   };
-
-  //   this.localstorageService.saveReportToListArgsEdit(updatedReport);
-
-  //   // aqui você poderia mandar salvar no backend
-  //   this.saved.emit({ reportId: this.reportId, datasetId: this.datasetId });
-  //   this.close.emit();
-  // }
-
   onSave() {
-    // Primeiro tenta achar no editados
-    let reports = this.localstorageService.getListArgsEdit();
-    let report = reports.find((r) => r.id === this.reportId);
+    // Salva/atualiza dataset editado em listArgsEdit
+    let editList = JSON.parse(localStorage.getItem('listArgsEdit') || '[]');
+    let reportEdit = editList.find((r: any) => r.id === this.reportId);
 
-    // Se não achar, pega nos não editados
-    if (!report) {
-      reports = this.localstorageService.getListArgsNotEdit();
-      report = reports.find((r) => r.id === this.reportId);
+    // Se não achar, cria novo
+    if (!reportEdit) {
+      // Garante que o nome do relatório está preenchido
+      let reportName = this.reportName;
+      if (!reportName) {
+        // Tenta buscar na lista de editados
+        let reports = JSON.parse(localStorage.getItem('listArgsEdit') || '[]');
+        let report = reports.find((r: any) => r.id === this.reportId);
+        if (!report) {
+          // Tenta buscar na lista de não editados
+          reports = JSON.parse(localStorage.getItem('listArgsNotEdit') || '[]');
+          report = reports.find((r: any) => r.id === this.reportId);
+        }
+        if (report) {
+          reportName = report.name;
+        }
+      }
+
+      reportEdit = {
+        id: this.reportId,
+        name: reportName,
+        datasets: [],
+      };
+      editList.push(reportEdit);
+    } else if (!reportEdit.name) {
+      // Se já existe mas o nome está vazio, tenta preencher
+      let reportName = this.reportName;
+      if (!reportName) {
+        let reports = JSON.parse(localStorage.getItem('listArgsEdit') || '[]');
+        let report = reports.find((r: any) => r.id === this.reportId);
+        if (!report) {
+          reports = JSON.parse(localStorage.getItem('listArgsNotEdit') || '[]');
+          report = reports.find((r: any) => r.id === this.reportId);
+        }
+        if (report) {
+          reportName = report.name;
+        }
+      }
+      reportEdit.name = reportName;
     }
 
-    if (!report) return;
-
-    // Atualiza apenas o dataset configurado
-    const updatedReport = {
-      ...report,
-      datasets: report.datasets.map((ds: any) =>
-        ds.id === this.datasetId ? { ...ds, config: this.configField } : ds
-      ),
+    // Atualiza ou adiciona dataset configurado
+    const dsIdx = reportEdit.datasets.findIndex(
+      (d: any) => d.id === this.datasetId
+    );
+    const updatedDataset = {
+      id: this.datasetId,
+      name: this.datasetName,
+      config: { field: this.configField }, // exemplo de config
     };
 
+    if (dsIdx > -1) {
+      reportEdit.datasets[dsIdx] = updatedDataset;
+    } else {
+      reportEdit.datasets.push(updatedDataset);
+    }
     // Salva no listArgsEdit
-    this.localstorageService.saveReportToListArgsEdit(updatedReport);
+    localStorage.setItem('listArgsEdit', JSON.stringify(editList));
 
-    // Remove do listArgsNotEdit
-    this.localstorageService.removeReportFromListArgsNotEdit(this.reportId);
+    // Remove dataset editado da lista de não editados
+    let notEditList = JSON.parse(
+      localStorage.getItem('listArgsNotEdit') || '[]'
+    );
+    const reportNotEdit = notEditList.find((r: any) => r.id === this.reportId);
+
+    if (reportNotEdit) {
+      reportNotEdit.datasets = reportNotEdit.datasets.filter(
+        (d: any) => d.id !== this.datasetId
+      );
+      // Se não sobrar nenhum dataset não editado, pode remover o relatório inteiro da lista
+      if (reportNotEdit.datasets.length === 0) {
+        notEditList = notEditList.filter((r: any) => r.id !== this.reportId);
+      }
+      localStorage.setItem('listArgsNotEdit', JSON.stringify(notEditList));
+    }
+
+    console.log(
+      `Alterado dataset de nome ${this.datasetName} no relatório de nome ${this.reportName}`
+    );
 
     // Dispara eventos
+    alert('Configuração do dataset salva com sucesso!');
     this.saved.emit({ reportId: this.reportId, datasetId: this.datasetId });
     this.close.emit();
   }

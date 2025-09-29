@@ -109,6 +109,12 @@
       "billingTypeSelected": "tipo2",
       "transactionCode": "wewe",
       "id": 11
+    },
+    {
+      "reportId": "rA",
+      "billingTypeSelected": "tipo1",
+      "transactionCode": "szsz",
+      "id": 12
     }
   ]
 }
